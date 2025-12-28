@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = async (req, res) => {
-	// Allow CORS dari frontend-mu (ganti kalau origin beda)
+	// CORS headers - allow frontend Angular-mu
 	res.setHeader(
 		'Access-Control-Allow-Origin',
 		'https://multiplehit.vercel.app'
@@ -9,13 +9,14 @@ module.exports = async (req, res) => {
 	res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-	// Handle preflight OPTIONS
+	// Handle preflight request
 	if (req.method === 'OPTIONS') {
 		return res.status(200).end();
 	}
 
+	// Hanya izinkan POST
 	if (req.method !== 'POST') {
-		return res.status(405).json({ error: 'Method not allowed' });
+		return res.status(405).json({ error: 'Method Not Allowed' });
 	}
 
 	const { url, formData } = req.body;
@@ -24,7 +25,8 @@ module.exports = async (req, res) => {
 		return res.status(400).json({ error: 'Missing url or formData' });
 	}
 
-	// === PASTE COOKIE SESSION ASLI MU DI SINI ===
+	// === GANTI DENGAN COOKIE SESSION ASLI KAMU ===
+	// Cara ambil: Login SIJSTK → F12 → Application → Cookies → copy value
 	const BPJS_COOKIE =
 		'PHPSESSID=PASTE_PHPSESSID_KAMU_DI_SINI; BIGipServersmile_productions.app~smile_productions_pool=PASTE_BIGIP_KAMU_DI_SINI';
 
@@ -43,17 +45,22 @@ module.exports = async (req, res) => {
 			timeout: 20000,
 		});
 
+		// Kirim HTML mentah ke frontend
 		res.status(200).send(response.data);
 	} catch (error) {
 		console.error('Proxy error:', error.message);
+
 		if (error.response) {
+			// Jika BPJS return halaman login atau error
 			res
 				.status(error.response.status)
-				.send(error.response.data || 'BPJS error');
+				.send(error.response.data || 'BPJS server error');
 		} else {
-			res
-				.status(500)
-				.json({ error: 'Gagal koneksi ke BPJS', details: error.message });
+			res.status(500).json({
+				error: 'Gagal koneksi ke server BPJS',
+				details: error.message,
+				hint: 'Periksa cookie session (mungkin sudah expired, login ulang dan update cookie)',
+			});
 		}
 	}
 };
