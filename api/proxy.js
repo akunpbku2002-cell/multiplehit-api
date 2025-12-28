@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 	// === GANTI DENGAN COOKIE SESSION ASLI KAMU ===
 	// Cara ambil: Login SIJSTK → F12 → Application → Cookies → copy value
 	const BPJS_COOKIE =
-		'BIGipServersmile_productions.app~smile_productions_pool=!R11fBj6/MvA128bniNkIKL0LQO8PDYyytEntuON9l7y0q40FtqQL3s09o3L/9DrsWftkMCm897t8nQ==; Path=/; HttpOnly;';
+		'BIGipServersmile_productions.app~smile_productions_pool=!R11fBj6/MvA128bniNkIKL0LQO8PDYyytEntuON9l7y0q40FtqQL3s09o3L/9DrsWftkMCm897t8nQ==';
 
 	const headers = {
 		'Content-Type': 'application/x-www-form-urlencoded',
